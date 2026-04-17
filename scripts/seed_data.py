@@ -1,6 +1,10 @@
+import asyncio
+import sys
 from pathlib import Path
 
-import asyncio
+BACKEND_DIR = Path(__file__).resolve().parents[1] / "backend"
+if str(BACKEND_DIR) not in sys.path:
+    sys.path.insert(0, str(BACKEND_DIR))
 
 from app.core.db import AsyncSessionLocal
 from app.modules.admin.seed import seed_platform_data
