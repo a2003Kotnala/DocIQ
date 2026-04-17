@@ -1,0 +1,36 @@
+{
+  "name": "High Value Invoice Approval",
+  "document_type": "invoice",
+  "trigger": {
+    "type": "field_value_threshold",
+    "field": "total_amount",
+    "operator": "gt",
+    "value": 50000
+  },
+  "conditions": [
+    {
+      "field": "validation_status",
+      "operator": "in",
+      "values": ["PASSED", "PASSED_WITH_WARNINGS"]
+    }
+  ],
+  "actions": [
+    {
+      "step": 1,
+      "type": "email_notification",
+      "config": {
+        "to_role": "MANAGER",
+        "subject": "Approval required for {{ invoice_number }}"
+      }
+    },
+    {
+      "step": 2,
+      "type": "internal_routing",
+      "config": {
+        "assign_to_role": "REVIEWER",
+        "priority": "HIGH"
+      }
+    }
+  ]
+}
+

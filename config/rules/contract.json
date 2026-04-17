@@ -1,0 +1,13 @@
+{
+  "document_type": "contract",
+  "rules": [
+    {
+      "rule_id": "contract_dates_order",
+      "rule_type": "cross_field",
+      "severity": "ERROR",
+      "expression": "effective_date < termination_date",
+      "message": "Effective date must be before termination date"
+    }
+  ]
+}
+

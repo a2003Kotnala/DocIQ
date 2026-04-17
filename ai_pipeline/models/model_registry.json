@@ -1,0 +1,7 @@
+{
+  "classification": "deterministic-dev-classifier",
+  "ocr": "deterministic-dev-ocr",
+  "layout": "deterministic-dev-layout",
+  "embedding": "deterministic-dev-embedding"
+}
+

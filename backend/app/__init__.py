@@ -1,0 +1,2 @@
+"""DocIQ application package."""
+

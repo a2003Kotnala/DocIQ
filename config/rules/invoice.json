@@ -1,0 +1,20 @@
+{
+  "document_type": "invoice",
+  "rules": [
+    {
+      "rule_id": "invoice_total_positive",
+      "rule_type": "range",
+      "field_name": "total_amount",
+      "severity": "ERROR",
+      "config": { "min": 0.01, "max": 5000000 }
+    },
+    {
+      "rule_id": "invoice_date_before_due_date",
+      "rule_type": "cross_field",
+      "severity": "ERROR",
+      "expression": "invoice_date <= due_date",
+      "message": "Invoice date must be before due date"
+    }
+  ]
+}
+
