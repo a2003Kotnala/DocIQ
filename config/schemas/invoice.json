@@ -1,0 +1,50 @@
+{
+  "name": "invoice",
+  "display_name": "Invoice",
+  "fields": [
+    {
+      "name": "invoice_number",
+      "display_name": "Invoice Number",
+      "data_type": "string",
+      "required": true,
+      "extraction_hints": {
+        "keywords": ["Invoice", "Invoice Number", "Invoice No"],
+        "pattern": "INV[- ]?[0-9]{4,10}",
+        "position_hint": "top_right",
+        "nearby_label": "Invoice Number"
+      }
+    },
+    {
+      "name": "invoice_date",
+      "display_name": "Invoice Date",
+      "data_type": "date",
+      "required": true,
+      "extraction_hints": {
+        "keywords": ["Invoice Date", "Date"],
+        "nearby_label": "Invoice Date"
+      }
+    },
+    {
+      "name": "vendor_name",
+      "display_name": "Vendor Name",
+      "data_type": "string",
+      "required": true,
+      "extraction_hints": {
+        "keywords": ["Vendor", "Supplier", "Bill From"],
+        "position_hint": "top_left"
+      }
+    },
+    {
+      "name": "total_amount",
+      "display_name": "Total Amount",
+      "data_type": "currency",
+      "required": true,
+      "extraction_hints": {
+        "keywords": ["Total", "Amount Due", "Invoice Total"],
+        "pattern": "\\$?[0-9,]+\\.[0-9]{2}",
+        "position_hint": "bottom_right"
+      }
+    }
+  ]
+}
+

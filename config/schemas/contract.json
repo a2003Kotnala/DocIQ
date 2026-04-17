@@ -1,0 +1,34 @@
+{
+  "name": "contract",
+  "display_name": "Contract",
+  "fields": [
+    {
+      "name": "counterparty_name",
+      "display_name": "Counterparty",
+      "data_type": "string",
+      "required": true,
+      "extraction_hints": {
+        "keywords": ["between", "by and between", "counterparty"]
+      }
+    },
+    {
+      "name": "effective_date",
+      "display_name": "Effective Date",
+      "data_type": "date",
+      "required": true,
+      "extraction_hints": {
+        "keywords": ["effective date", "commencement date"]
+      }
+    },
+    {
+      "name": "termination_date",
+      "display_name": "Termination Date",
+      "data_type": "date",
+      "required": false,
+      "extraction_hints": {
+        "keywords": ["termination", "expires", "end date"]
+      }
+    }
+  ]
+}
+
