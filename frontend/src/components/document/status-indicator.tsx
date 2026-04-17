@@ -1,14 +1,18 @@
 import { cn } from "@/lib/utils";
 
 export function StatusIndicator({ status }: { status: string }) {
-  const tone = status.includes("FAILED") || status === "REJECTED"
-    ? "bg-danger/10 text-danger border-danger/30"
-    : status.includes("REVIEW")
-      ? "bg-warning/10 text-warning border-warning/30"
-      : status === "APPROVED" || status === "READY"
-        ? "bg-success/10 text-success border-success/30"
-        : "bg-accent/10 text-accent border-accent/30";
+  const tone =
+    status.includes("FAILED") || status === "REJECTED"
+      ? "border-orange-300/20 bg-orange-500/10 text-orange-200"
+      : status.includes("REVIEW")
+        ? "border-amber-300/20 bg-amber-400/10 text-amber-200"
+        : status === "APPROVED" || status === "READY"
+          ? "border-emerald-300/20 bg-emerald-400/10 text-emerald-200"
+          : "border-sky-300/20 bg-sky-400/10 text-sky-200";
 
-  return <span className={cn("rounded-full border px-2.5 py-1 text-xs font-medium", tone)}>{status}</span>;
+  return (
+    <span className={cn("inline-flex rounded-full border px-3 py-1.5 text-xs font-semibold tracking-[0.04em]", tone)}>
+      {status.replaceAll("_", " ")}
+    </span>
+  );
 }
-

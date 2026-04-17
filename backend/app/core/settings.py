@@ -18,8 +18,8 @@ class Settings(BaseSettings):
     jwt_algorithm: str = "HS256"
     access_token_expire_minutes: int = 15
     refresh_token_expire_days: int = 7
-    database_url: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/dociq"
-    sync_database_url: str = "postgresql+psycopg://postgres:postgres@localhost:5432/dociq"
+    database_url: str = "postgresql+asyncpg://postgres:postgres@localhost:5433/dociq"
+    sync_database_url: str = "postgresql+psycopg://postgres:postgres@localhost:5433/dociq"
     redis_url: str = "redis://localhost:6379/0"
     qdrant_url: str = "http://localhost:6333"
     s3_endpoint_url: str = "http://localhost:9000"

@@ -1,0 +1,60 @@
+Metadata-Version: 2.4
+Name: dociq-backend
+Version: 0.1.0
+Summary: DocIQ backend modular monolith
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+Requires-Dist: alembic>=1.13.2
+Requires-Dist: asyncpg>=0.29.0
+Requires-Dist: boto3>=1.34.162
+Requires-Dist: celery[redis]>=5.4.0
+Requires-Dist: cryptography>=43.0.1
+Requires-Dist: email-validator>=2.2.0
+Requires-Dist: fastapi>=0.115.0
+Requires-Dist: httpx>=0.27.2
+Requires-Dist: itsdangerous>=2.2.0
+Requires-Dist: numpy>=2.1.0
+Requires-Dist: opencv-python-headless>=4.10.0.84
+Requires-Dist: orjson>=3.10.7
+Requires-Dist: passlib[bcrypt]>=1.7.4
+Requires-Dist: pillow>=10.4.0
+Requires-Dist: prometheus-fastapi-instrumentator>=7.0.0
+Requires-Dist: psycopg[binary]>=3.2.1
+Requires-Dist: pydantic>=2.8.2
+Requires-Dist: pydantic-settings>=2.4.0
+Requires-Dist: pymupdf>=1.24.9
+Requires-Dist: pyjwt>=2.9.0
+Requires-Dist: python-dotenv>=1.0.1
+Requires-Dist: python-multipart>=0.0.9
+Requires-Dist: qdrant-client>=1.10.1
+Requires-Dist: redis>=5.0.8
+Requires-Dist: sqlalchemy>=2.0.32
+Requires-Dist: structlog>=24.4.0
+Requires-Dist: tenacity>=9.0.0
+Requires-Dist: typer>=0.12.3
+Requires-Dist: uuid6>=2024.7.10
+Requires-Dist: uvicorn[standard]>=0.30.6
+Provides-Extra: dev
+Requires-Dist: coverage>=7.6.1; extra == "dev"
+Requires-Dist: faker>=26.2.0; extra == "dev"
+Requires-Dist: freezegun>=1.5.1; extra == "dev"
+Requires-Dist: pytest>=8.3.2; extra == "dev"
+Requires-Dist: pytest-asyncio>=0.24.0; extra == "dev"
+Requires-Dist: pytest-cov>=5.0.0; extra == "dev"
+Requires-Dist: respx>=0.21.1; extra == "dev"
+Requires-Dist: ruff>=0.6.1; extra == "dev"
+
+# DocIQ Backend
+
+This is the backend package for DocIQ.
+
+The full project documentation lives in the repository root `README.md`.
+
+Backend contents:
+
+- FastAPI application
+- SQLAlchemy models and Alembic migrations
+- Celery worker integration
+- Storage, auth, RBAC, audit, and observability wiring
+- Domain modules for documents, extraction, validation, search, workflows, feedback, analytics, and admin
+

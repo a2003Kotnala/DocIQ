@@ -3,6 +3,7 @@ from __future__ import annotations
 from fastapi import APIRouter, Depends
 
 from app.core.deps import CurrentUser, SessionDep, require_permission
+from app.modules.auth.models import User
 from app.modules.search.schemas import AskRequest, SearchFeedbackRequest, SearchRequest
 from app.modules.search.service import ask_question, run_search, submit_search_feedback
 
@@ -14,7 +15,7 @@ qa_router = APIRouter(prefix="/qa", tags=["qa"])
 async def search_route(
     payload: SearchRequest,
     session: SessionDep,
-    user: CurrentUser = Depends(require_permission("search.execute")),
+    user: User = Depends(require_permission("search.execute")),
 ) -> dict:
     return await run_search(session, payload, user)
 
@@ -28,7 +29,7 @@ async def search_history_route(session: SessionDep, user: CurrentUser) -> dict:
 async def ask_route(
     payload: AskRequest,
     session: SessionDep,
-    user: CurrentUser = Depends(require_permission("search.execute")),
+    user: User = Depends(require_permission("search.execute")),
 ) -> dict:
     return await ask_question(session, payload, user)
 

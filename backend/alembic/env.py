@@ -6,7 +6,15 @@ from alembic import context
 from sqlalchemy import engine_from_config, pool
 
 from app.core.settings import get_settings
-from app.shared.models import *  # noqa: F403
+from app.modules.auth import models as auth_models  # noqa: F401
+from app.modules.documents import models as documents_models  # noqa: F401
+from app.modules.extraction import models as extraction_models  # noqa: F401
+from app.modules.feedback import models as feedback_models  # noqa: F401
+from app.modules.search import models as search_models  # noqa: F401
+from app.modules.validation import models as validation_models  # noqa: F401
+from app.modules.workflows import models as workflow_models  # noqa: F401
+from app.shared.models import audit as audit_models  # noqa: F401
+from app.shared.models import ml as ml_models  # noqa: F401
 from app.shared.models.base import Base
 
 config = context.config

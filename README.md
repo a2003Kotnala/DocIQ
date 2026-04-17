@@ -114,7 +114,7 @@ Copy-Item .env.example .env
 
 The defaults are set up for local development:
 
-- PostgreSQL on `localhost:5432`
+- PostgreSQL on `localhost:5433`
 - Redis on `localhost:6379`
 - Qdrant on `localhost:6333`
 - MinIO on `localhost:9000`
@@ -135,7 +135,7 @@ docker compose up -d
 
 This starts:
 
-- PostgreSQL
+- PostgreSQL on host port `5433`
 - Redis
 - Qdrant
 - MinIO
@@ -205,6 +205,8 @@ Set-Location .\backend
 celery -A app.core.celery_app worker --loglevel=info -Q high_priority,batch,background
 ```
 
+On Windows, DocIQ now defaults Celery to the `solo` pool automatically to avoid the `prefork` permission errors that commonly appear with `billiard`.
+
 Optional:
 
 - Flower UI: `http://127.0.0.1:5555`
@@ -243,6 +245,7 @@ After running the seed script, use:
 - Frontend: `http://127.0.0.1:3000`
 - Backend: `http://127.0.0.1:8000`
 - Swagger UI: `http://127.0.0.1:8000/docs`
+- PostgreSQL: `localhost:5433`
 - MinIO API: `http://127.0.0.1:9000`
 - MinIO Console: `http://127.0.0.1:9001`
 - Flower: `http://127.0.0.1:5555`

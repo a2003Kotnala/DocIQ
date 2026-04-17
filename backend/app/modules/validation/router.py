@@ -3,7 +3,8 @@ from __future__ import annotations
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 
-from app.core.deps import CurrentUser, SessionDep, require_permission
+from app.core.deps import SessionDep, require_permission
+from app.modules.auth.models import User
 from app.modules.validation.service import override_validation
 
 router = APIRouter(prefix="/validation", tags=["validation"])
@@ -19,7 +20,7 @@ class OverrideRequest(BaseModel):
 async def override_validation_route(
     payload: OverrideRequest,
     session: SessionDep,
-    user: CurrentUser = Depends(require_permission("document.approve")),
+    user: User = Depends(require_permission("document.approve")),
 ) -> dict:
     result = await override_validation(
         session,

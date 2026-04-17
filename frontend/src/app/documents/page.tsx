@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
+import { ArrowUpRight, FilePlus2, FileText } from "lucide-react";
 
 import { getDocuments } from "@/api/documents";
 import { ConfidenceBadge } from "@/components/document/confidence-badge";
@@ -20,36 +21,81 @@ export default function DocumentsPage() {
   });
 
   return (
-    <AppShell title="Documents" subtitle="Browse all ingested documents with confidence and validation status visible at a glance.">
-      <div className="flex justify-end">
+    <AppShell
+      eyebrow="Corpus"
+      title="Tenant-scoped document inventory with confidence, status, and evidence posture visible at a glance."
+      subtitle="Every file keeps its processing status, extraction confidence, and approval readiness attached from ingestion through review."
+      actions={
         <Link href="/documents/upload">
-          <Button>Upload Documents</Button>
+          <Button>
+            <FilePlus2 className="h-4 w-4" />
+            Upload documents
+          </Button>
         </Link>
-      </div>
-      <Card className="overflow-hidden">
-        <div className="grid grid-cols-[2fr,1fr,1fr,1fr] gap-4 border-b border-border/70 px-5 py-4 text-xs uppercase tracking-[0.18em] text-muted">
+      }
+    >
+      <Card className="p-5 lg:p-6">
+        <div className="relative z-10 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <div className="metric-kicker">Corpus status</div>
+            <div className="mt-3 text-2xl font-display text-foreground">{documents.data?.total ?? 0} documents in scope</div>
+            <p className="mt-2 max-w-3xl text-sm leading-6 text-muted">
+              Operational teams can scan high-risk documents first, then open evidence-linked detail views for review, correction, and approval.
+            </p>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-3">
+            {[
+              ["Queued", (documents.data?.items ?? []).filter((doc) => doc.status.includes("PENDING")).length],
+              ["In review", (documents.data?.items ?? []).filter((doc) => doc.status.includes("REVIEW")).length],
+              ["Ready", (documents.data?.items ?? []).filter((doc) => doc.status === "READY" || doc.status === "APPROVED").length]
+            ].map(([label, value]) => (
+              <div key={label} className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3">
+                <div className="metric-kicker">{label}</div>
+                <div className="mt-2 text-xl font-semibold text-foreground">{value}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </Card>
+
+      <div className="app-table">
+        <div className="app-table-header hidden grid-cols-[minmax(0,2.6fr)_1fr_1fr_auto] gap-4 px-6 py-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted md:grid">
           <span>Name</span>
           <span>Status</span>
           <span>Confidence</span>
           <span>Open</span>
         </div>
-        <div className="divide-y divide-border/70">
+        <div className="divide-y divide-white/5">
           {(documents.data?.items ?? []).map((document) => (
-            <div key={document.id} className="grid grid-cols-[2fr,1fr,1fr,1fr] items-center gap-4 px-5 py-4">
-              <div>
-                <div className="font-medium text-foreground">{document.original_filename}</div>
-                <div className="text-xs text-muted">{document.file_format.toUpperCase()}</div>
+            <div key={document.id} className="app-table-row grid gap-4 px-5 py-5 md:grid-cols-[minmax(0,2.6fr)_1fr_1fr_auto] md:px-6">
+              <div className="flex items-start gap-4">
+                <div className="grid h-11 w-11 place-items-center rounded-2xl border border-white/8 bg-white/[0.03] text-sky-100">
+                  <FileText className="h-4 w-4" />
+                </div>
+                <div className="min-w-0">
+                  <div className="truncate text-sm font-semibold text-foreground">{document.original_filename}</div>
+                  <div className="mt-1 text-xs uppercase tracking-[0.16em] text-muted">{document.file_format.toUpperCase()}</div>
+                </div>
               </div>
-              <StatusIndicator status={document.status} />
-              <ConfidenceBadge confidence={document.overall_extraction_confidence ?? undefined} />
-              <Link className="text-sm text-accent" href={`/documents/${document.id}`}>
-                View
-              </Link>
+              <div className="flex items-center">
+                <StatusIndicator status={document.status} />
+              </div>
+              <div className="flex items-center">
+                <ConfidenceBadge confidence={document.overall_extraction_confidence ?? undefined} />
+              </div>
+              <div className="flex items-center">
+                <Link
+                  className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.03] px-3 py-2 text-sm font-medium text-foreground transition hover:border-sky-300/20 hover:bg-sky-300/10"
+                  href={`/documents/${document.id}`}
+                >
+                  View
+                  <ArrowUpRight className="h-4 w-4" />
+                </Link>
+              </div>
             </div>
           ))}
         </div>
-      </Card>
+      </div>
     </AppShell>
   );
 }
-

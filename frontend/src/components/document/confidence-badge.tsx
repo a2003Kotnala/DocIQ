@@ -3,17 +3,16 @@ import { cn } from "@/lib/utils";
 export function ConfidenceBadge({ confidence }: { confidence?: number | null }) {
   const tone =
     confidence === null || confidence === undefined
-      ? "bg-white/5 text-muted"
+      ? "border-white/10 bg-white/[0.04] text-muted"
       : confidence >= 0.9
-        ? "bg-success/10 text-success border-success/30"
+        ? "border-emerald-300/20 bg-emerald-400/10 text-emerald-200"
         : confidence >= 0.7
-          ? "bg-warning/10 text-warning border-warning/30"
-          : "bg-danger/10 text-danger border-danger/30";
+          ? "border-amber-300/20 bg-amber-400/10 text-amber-200"
+          : "border-orange-300/20 bg-orange-500/10 text-orange-200";
 
   return (
-    <span className={cn("rounded-full border px-2.5 py-1 text-xs font-medium", tone)}>
-      {confidence === null || confidence === undefined ? "N/A" : `${Math.round(confidence * 100)}%`}
+    <span className={cn("inline-flex rounded-full border px-3 py-1.5 text-xs font-semibold tracking-[0.04em]", tone)}>
+      {confidence === null || confidence === undefined ? "N/A" : `${Math.round(confidence * 100)}% confidence`}
     </span>
   );
 }
-

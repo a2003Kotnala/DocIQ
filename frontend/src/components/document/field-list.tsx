@@ -1,5 +1,7 @@
 "use client";
 
+import { MapPinned, Sparkles } from "lucide-react";
+
 import { ExtractedField, ValidationResult } from "@/types/api";
 import { ConfidenceBadge } from "@/components/document/confidence-badge";
 import { Button } from "@/components/ui/button";
@@ -16,24 +18,34 @@ export function FieldList({
   const selectField = useDocumentViewerStore((state) => state.selectField);
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       {fields.map((field) => {
         const validation = validations.find((item) => item.rule_id.toLowerCase().includes(field.field_name.toLowerCase()));
         return (
           <Card key={field.id} className="p-4">
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <div className="text-xs uppercase tracking-[0.18em] text-muted">{field.field_display_name ?? field.field_name}</div>
-                <div className="mt-2 font-mono text-sm text-foreground">{field.raw_value ?? "No value"}</div>
-                <div className="mt-2 text-xs text-muted">{validation?.message ?? field.source_text ?? "Traceable extraction available."}</div>
+            <div className="relative z-10">
+              <div className="flex items-start justify-between gap-4">
+                <div className="min-w-0">
+                  <div className="metric-kicker">{field.field_display_name ?? field.field_name}</div>
+                  <div className="mt-3 rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3 font-mono text-sm text-foreground">
+                    {field.raw_value ?? "No value"}
+                  </div>
+                  <div className="mt-3 text-sm leading-6 text-muted">
+                    {validation?.message ?? field.source_text ?? "Traceable extraction available for review."}
+                  </div>
+                </div>
+                <ConfidenceBadge confidence={field.confidence} />
               </div>
-              <ConfidenceBadge confidence={field.confidence} />
-            </div>
-            <div className="mt-4 flex items-center gap-2">
-              <Button variant="secondary" onClick={() => selectField(field.id, field.source_bbox ?? null)}>
-                Highlight Source
-              </Button>
-              <span className="text-xs text-muted">{field.extraction_method ?? "hybrid"} extraction</span>
+              <div className="mt-4 flex flex-wrap items-center gap-2">
+                <Button variant="secondary" onClick={() => selectField(field.id, field.source_bbox ?? null)}>
+                  <MapPinned className="h-4 w-4" />
+                  Highlight source
+                </Button>
+                <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs text-muted">
+                  <Sparkles className="h-3.5 w-3.5 text-sky-200" />
+                  {field.extraction_method ?? "hybrid"} extraction
+                </span>
+              </div>
             </div>
           </Card>
         );
@@ -41,4 +53,3 @@ export function FieldList({
     </div>
   );
 }
-

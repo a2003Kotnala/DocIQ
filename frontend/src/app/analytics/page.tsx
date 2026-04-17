@@ -16,20 +16,52 @@ export default function AnalyticsPage() {
     enabled: Boolean(token)
   });
 
+  const performanceBars = [28, 36, 42, 55, 60, 72, 84];
+  const accuracyBars = [52, 58, 64, 68, 76, 82, 90];
+
   return (
-    <AppShell title="Analytics" subtitle="Measure throughput, accuracy, review effort, and operational cost across the full pipeline.">
+    <AppShell
+      eyebrow="Business analytics"
+      title="Measure throughput, accuracy, review pressure, and cost in one executive-grade analytics surface."
+      subtitle="DocIQ exposes both operational and business outcomes so teams can improve extraction quality, reduce manual review load, and defend ROI."
+    >
       {overview.data ? <OverviewCards metrics={overview.data} /> : null}
       <div className="grid gap-4 xl:grid-cols-2">
-        <Card className="h-80 p-5">
-          <div className="text-xs uppercase tracking-[0.18em] text-muted">Processing performance</div>
-          <div className="mt-4 h-56 rounded-2xl border border-border bg-[#111521]" />
+        <Card className="p-6">
+          <div className="relative z-10">
+            <div className="metric-kicker">Processing performance</div>
+            <h2 className="mt-3 font-display text-2xl text-foreground">Latency and throughput remain visible as volume scales.</h2>
+            <div className="mt-6 flex h-64 items-end gap-3">
+              {performanceBars.map((value, index) => (
+                <div key={`processing-${index}`} className="flex flex-1 flex-col items-center gap-3">
+                  <div
+                    className="w-full rounded-full bg-[linear-gradient(180deg,rgba(135,232,255,0.95),rgba(14,165,233,0.18))]"
+                    style={{ height: `${value}%` }}
+                  />
+                  <span className="text-[10px] uppercase tracking-[0.16em] text-muted">{index + 1}</span>
+                </div>
+              ))}
+            </div>
+          </div>
         </Card>
-        <Card className="h-80 p-5">
-          <div className="text-xs uppercase tracking-[0.18em] text-muted">Accuracy and feedback trends</div>
-          <div className="mt-4 h-56 rounded-2xl border border-border bg-[#111521]" />
+        <Card className="p-6">
+          <div className="relative z-10">
+            <div className="metric-kicker">Accuracy and feedback</div>
+            <h2 className="mt-3 font-display text-2xl text-foreground">Correction volume feeds back into quality improvement.</h2>
+            <div className="mt-6 flex h-64 items-end gap-3">
+              {accuracyBars.map((value, index) => (
+                <div key={`accuracy-${index}`} className="flex flex-1 flex-col items-center gap-3">
+                  <div
+                    className="w-full rounded-full bg-[linear-gradient(180deg,rgba(34,197,94,0.94),rgba(34,197,94,0.18))]"
+                    style={{ height: `${value}%` }}
+                  />
+                  <span className="text-[10px] uppercase tracking-[0.16em] text-muted">{index + 1}</span>
+                </div>
+              ))}
+            </div>
+          </div>
         </Card>
       </div>
     </AppShell>
   );
 }
-

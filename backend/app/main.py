@@ -8,6 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.core.logging import configure_logging
 from app.core.middleware import RequestContextMiddleware
 from app.core.observability import setup_observability
+from app.core.runtime_paths import ensure_repo_root_on_path
 from app.core.settings import get_settings
 from app.modules.admin.router import router as admin_router
 from app.modules.analytics.router import router as analytics_router
@@ -19,6 +20,7 @@ from app.modules.validation.router import router as validation_router
 from app.modules.workflows.router import router as workflows_router
 
 configure_logging()
+ensure_repo_root_on_path()
 settings = get_settings()
 
 app = FastAPI(title=settings.app_name, version="0.1.0", openapi_url=f"{settings.api_v1_prefix}/openapi.json")

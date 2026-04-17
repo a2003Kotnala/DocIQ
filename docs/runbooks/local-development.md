@@ -27,6 +27,8 @@ cd backend
 celery -A app.core.celery_app worker --loglevel=info -Q high_priority,batch,background
 ```
 
+On Windows, the worker is configured to use Celery's `solo` pool by default because `prefork` is not reliable there.
+
 ## Start Frontend
 
 ```bash

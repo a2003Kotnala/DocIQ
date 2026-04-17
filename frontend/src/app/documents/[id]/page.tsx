@@ -2,6 +2,7 @@
 
 import { useParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
+import { BadgeCheck, ClipboardCheck, ScanSearch } from "lucide-react";
 
 import { getDocument } from "@/api/documents";
 import { DocumentViewer } from "@/components/document/document-viewer";
@@ -22,19 +23,55 @@ export default function DocumentDetailPage() {
   const document = documentQuery.data;
 
   return (
-    <AppShell title={document?.original_filename ?? "Document Viewer"} subtitle="Trace every extracted field back to the exact evidence used to produce it.">
-      <div className="grid gap-4 xl:grid-cols-[1.35fr,0.65fr]">
+    <AppShell
+      eyebrow="Review workspace"
+      title={document?.original_filename ?? "Document viewer"}
+      subtitle="Trace every extracted field back to exact evidence, review validation signals, and keep approvals grounded in source context."
+    >
+      <div className="grid gap-4 xl:grid-cols-[1.3fr,0.7fr]">
         <DocumentViewer pageCount={document?.page_count} />
         <div className="space-y-4">
-          <Card className="p-4">
-            <div className="text-xs uppercase tracking-[0.18em] text-muted">Document summary</div>
-            <div className="mt-3 text-sm text-foreground">Classification confidence: {Math.round((document?.classification_confidence ?? 0) * 100)}%</div>
-            <div className="mt-2 text-sm text-muted">Validation status: {document?.validation_status ?? "Pending"}</div>
+          <Card className="p-5">
+            <div className="relative z-10">
+              <div className="metric-kicker">Document summary</div>
+              <div className="mt-5 grid gap-3">
+                {[
+                  {
+                    label: "Classification confidence",
+                    value: `${Math.round((document?.classification_confidence ?? 0) * 100)}%`,
+                    icon: ScanSearch
+                  },
+                  { label: "Validation status", value: document?.validation_status ?? "Pending", icon: ClipboardCheck },
+                  {
+                    label: "Field review readiness",
+                    value: `${document?.extracted_fields.length ?? 0} extracted fields`,
+                    icon: BadgeCheck
+                  }
+                ].map(({ label, value, icon: Icon }) => (
+                  <div key={label} className="rounded-[22px] border border-white/8 bg-white/[0.03] p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="grid h-10 w-10 place-items-center rounded-2xl border border-white/10 bg-white/[0.03] text-sky-100">
+                        <Icon className="h-4 w-4" />
+                      </div>
+                      <div>
+                        <div className="text-xs uppercase tracking-[0.16em] text-muted">{label}</div>
+                        <div className="mt-1 text-sm font-semibold text-foreground">{value}</div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </Card>
-          <FieldList fields={document?.extracted_fields ?? []} validations={document?.validation_results ?? []} />
+          <div>
+            <div className="mb-4">
+              <div className="metric-kicker">Extracted fields</div>
+              <div className="mt-2 text-lg font-semibold text-foreground">Evidence-linked output for human confirmation.</div>
+            </div>
+            <FieldList fields={document?.extracted_fields ?? []} validations={document?.validation_results ?? []} />
+          </div>
         </div>
       </div>
     </AppShell>
   );
 }
-

@@ -1,11 +1,16 @@
 from __future__ import annotations
 
+import os
+
 from celery import Celery
 
+from app.core.runtime_paths import ensure_repo_root_on_path
 from app.core.settings import get_settings
 
+ensure_repo_root_on_path()
 
 settings = get_settings()
+is_windows = os.name == "nt"
 
 celery_app = Celery(
     "dociq",
@@ -23,6 +28,8 @@ celery_app = Celery(
     ],
 )
 
+worker_runtime_config = {"worker_pool": "solo", "worker_concurrency": 1} if is_windows else {"worker_pool": "prefork"}
+
 celery_app.conf.update(
     task_serializer="json",
     result_serializer="json",
@@ -34,5 +41,6 @@ celery_app.conf.update(
     },
     task_acks_late=True,
     worker_prefetch_multiplier=1,
+    **worker_runtime_config,
 )
 

@@ -1,26 +1,69 @@
+import { ArrowRight, GitBranchPlus } from "lucide-react";
+
 import { Card } from "@/components/ui/card";
 import { WorkflowDefinition } from "@/types/api";
 
 export function WorkflowList({ workflows }: { workflows: WorkflowDefinition[] }) {
+  if (!workflows.length) {
+    return (
+      <Card className="p-8">
+        <div className="relative z-10">
+          <div className="section-label">Automation staging</div>
+          <h3 className="mt-4 font-display text-2xl text-foreground">No workflow definitions have been published yet.</h3>
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-muted">
+            Once you connect document conditions to downstream actions, workflows will appear here with trigger depth, action count, and runtime posture.
+          </p>
+        </div>
+      </Card>
+    );
+  }
+
   return (
-    <div className="space-y-3">
+    <div className="grid gap-4 xl:grid-cols-2">
       {workflows.map((workflow) => (
-        <Card key={workflow.id} className="p-5">
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <div className="font-medium text-foreground">{workflow.name}</div>
-              <div className="mt-2 text-sm text-muted">{workflow.description ?? "Document-triggered automation rule"}</div>
+        <Card key={workflow.id} className="p-5 lg:p-6">
+          <div className="relative z-10">
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex items-start gap-4">
+                <div className="grid h-12 w-12 place-items-center rounded-2xl border border-sky-300/16 bg-sky-300/10 text-sky-100">
+                  <GitBranchPlus className="h-5 w-5" />
+                </div>
+                <div>
+                  <div className="text-lg font-semibold text-foreground">{workflow.name}</div>
+                  <div className="mt-2 text-sm leading-6 text-muted">{workflow.description ?? "Document-triggered automation rule"}</div>
+                </div>
+              </div>
+              <div
+                className={
+                  workflow.is_active
+                    ? "rounded-full border border-emerald-300/20 bg-emerald-400/10 px-3 py-1.5 text-xs font-semibold text-emerald-200"
+                    : "rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs font-semibold text-muted"
+                }
+              >
+                {workflow.is_active ? "Active" : "Draft"}
+              </div>
             </div>
-            <div className="rounded-full border border-success/30 bg-success/10 px-3 py-1 text-xs text-success">
-              {workflow.is_active ? "Active" : "Disabled"}
+            <div className="mt-6 grid gap-3 sm:grid-cols-3">
+              <div className="rounded-2xl border border-white/8 bg-white/[0.03] p-4">
+                <div className="metric-kicker">Trigger</div>
+                <div className="mt-2 text-xl font-semibold text-foreground">1</div>
+              </div>
+              <div className="rounded-2xl border border-white/8 bg-white/[0.03] p-4">
+                <div className="metric-kicker">Conditions</div>
+                <div className="mt-2 text-xl font-semibold text-foreground">{workflow.conditions.length}</div>
+              </div>
+              <div className="rounded-2xl border border-white/8 bg-white/[0.03] p-4">
+                <div className="metric-kicker">Actions</div>
+                <div className="mt-2 text-xl font-semibold text-foreground">{workflow.actions.length}</div>
+              </div>
             </div>
-          </div>
-          <div className="mt-4 text-xs text-muted">
-            {workflow.actions.length} actions • {workflow.conditions.length} conditions
+            <div className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-sky-100">
+              Workflow posture visible
+              <ArrowRight className="h-4 w-4" />
+            </div>
           </div>
         </Card>
       ))}
     </div>
   );
 }
-
