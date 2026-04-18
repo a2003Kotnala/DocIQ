@@ -45,94 +45,64 @@ const navGroups = [
 
 export function Sidebar() {
   const pathname = usePathname();
-  const collapsed = useUiStore((state) => state.sidebarCollapsed);
+  const collapsed = useUiStore((state) => state.desktopSidebarCollapsed);
+  const mobileOpen = useUiStore((state) => state.mobileSidebarOpen);
+  const closeMobileSidebar = useUiStore((state) => state.closeMobileSidebar);
   const organization = useAuthStore((state) => state.organization);
 
   return (
     <aside
       className={cn(
-        "glass-surface sticky top-0 flex h-screen flex-col border-r border-white/10 px-4 py-5 transition-all duration-300",
-        collapsed ? "w-24" : "w-[302px]"
+        "sidebar fixed inset-y-0 left-0 z-40 h-screen transform transition-transform duration-300 md:relative md:z-auto md:translate-x-0",
+        mobileOpen ? "translate-x-0" : "-translate-x-full",
+        collapsed ? "collapsed" : ""
       )}
     >
-      <div className="border-b soft-divider px-2 pb-5">
-        <div className="flex items-center gap-3">
-          <div className="grid h-11 w-11 place-items-center rounded-2xl border border-sky-300/20 bg-sky-300/10 text-sm font-semibold text-sky-100 shadow-[0_0_30px_rgba(56,189,248,0.18)]">
-            DQ
-          </div>
-          {!collapsed ? (
-            <div className="min-w-0">
-              <div className="font-display text-lg tracking-[0.16em] text-foreground">DOCIQ</div>
-              <p className="truncate text-xs text-muted">{organization?.name ?? "Enterprise Document Intelligence"}</p>
-            </div>
-          ) : null}
+      <div className="logo">
+        <div className="logo-row">
+          <div className="logo-mark">DQ</div>
+          {!collapsed ? <div className="logo-name">DocIQ</div> : null}
         </div>
+        {!collapsed ? <div className="logo-sub">{organization?.name ?? "Enterprise Document Intelligence"}</div> : null}
       </div>
 
-      <div className="scrollbar-thin mt-5 flex-1 space-y-6 overflow-y-auto pr-1">
-        {navGroups.map((group) => (
-          <div key={group.label} className="space-y-2">
-            {!collapsed ? <div className="px-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-muted">{group.label}</div> : null}
-            <div className="space-y-1">
-              {group.items.map(({ href, label, icon: Icon, hint }) => {
+      <div className="scrollbar-thin flex-1 overflow-y-auto">
+        {navGroups.map((group, groupIndex) => (
+          <div key={group.label}>
+            <div className="nav-group">
+              {!collapsed ? <div className="nav-group-label">{group.label}</div> : null}
+              {group.items.map(({ href, label, icon: Icon }) => {
                 const active = pathname === href || pathname.startsWith(`${href}/`);
+
                 return (
                   <Link
                     key={href}
                     href={href}
-                    className={cn(
-                      "group relative flex items-center gap-3 rounded-2xl px-3 py-3 transition-all duration-200",
-                      active
-                        ? "bg-[linear-gradient(135deg,rgba(56,189,248,0.18),rgba(255,255,255,0.03))] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]"
-                        : "text-slate-300 hover:bg-white/[0.04] hover:text-white"
-                    )}
+                    onClick={closeMobileSidebar}
+                    className={cn("nav-item", active ? "active" : "")}
+                    aria-current={active ? "page" : undefined}
                   >
-                    <div
-                      className={cn(
-                        "grid h-10 w-10 shrink-0 place-items-center rounded-xl border transition-all duration-200",
-                        active
-                          ? "border-sky-300/25 bg-sky-300/10 text-sky-100"
-                          : "border-white/5 bg-white/[0.025] text-slate-400 group-hover:border-white/10 group-hover:text-white"
-                      )}
-                    >
-                      <Icon className="h-4 w-4" />
-                    </div>
-                    {!collapsed ? (
-                      <div className="min-w-0">
-                        <div className="text-sm font-medium">{label}</div>
-                        <div className={cn("text-xs", active ? "text-sky-100/70" : "text-muted")}>{hint}</div>
-                      </div>
-                    ) : null}
+                    <Icon className="ni" size={13} strokeWidth={1.4} />
+                    {!collapsed ? label : null}
                   </Link>
                 );
               })}
             </div>
+            {groupIndex < navGroups.length - 1 ? <div className="nav-rule" /> : null}
           </div>
         ))}
       </div>
 
-      <div className="mt-5 rounded-[24px] border border-emerald-300/12 bg-[linear-gradient(180deg,rgba(18,40,48,0.72),rgba(10,20,31,0.92))] p-4">
-        {collapsed ? (
-          <div className="grid place-items-center">
-            <Settings2 className="h-5 w-5 text-emerald-300" />
-          </div>
-        ) : (
-          <>
-            <div className="flex items-center justify-between">
-              <div className="text-sm font-semibold text-foreground">Trust Layer</div>
-              <span className="status-dot bg-emerald-400 text-emerald-400" />
+      <div className="sidebar-foot">
+        {!collapsed ? (
+          <div className="trust-tag">
+            <div className="tt-head">
+              <span className="tt-dot" />
+              Trust layer active
             </div>
-            <p className="mt-2 text-xs leading-5 text-muted">
-              Confidence, validation, and cited evidence stay visible from ingestion through workflow execution.
-            </p>
-            <Link
-              href="/settings"
-              className="mt-4 inline-flex items-center rounded-xl border border-white/10 px-3 py-2 text-xs font-medium text-slate-100 transition hover:border-white/20 hover:bg-white/[0.04]"
-            >
-              Platform settings
-            </Link>
-          </>
-        )}
+            <div className="tt-body">Confidence, validation, and cited evidence stay visible from ingestion to execution.</div>
+          </div>
+        ) : null}
       </div>
     </aside>
   );

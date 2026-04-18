@@ -45,9 +45,9 @@ export function OverviewCards({ metrics }: { metrics: AnalyticsOverview }) {
             <div className="flex items-start justify-between gap-4">
               <div>
                 <div className="metric-kicker">{label}</div>
-                <div className="mt-4 font-display text-4xl text-foreground">{value}</div>
+                <div className="mt-4 font-display text-4xl font-medium text-foreground">{value}</div>
               </div>
-              <div className="grid h-11 w-11 place-items-center rounded-2xl border border-sky-300/18 bg-sky-300/10 text-sky-100">
+              <div className="grid h-11 w-11 place-items-center rounded-lg border border-[rgba(220,180,110,0.14)] bg-[rgba(200,147,74,0.08)] text-accent">
                 <Icon className="h-5 w-5" />
               </div>
             </div>

@@ -1,38 +1,62 @@
+"use client";
+
 import { Header } from "@/components/layout/header";
 import { Sidebar } from "@/components/layout/sidebar";
+import { useUiStore } from "@/stores/uiStore";
 
 export function AppShell({
   title,
   subtitle,
   eyebrow,
   actions,
-  children
+  children,
+  wrapChildren = true
 }: {
-  title: string;
-  subtitle?: string;
-  eyebrow?: string;
+  title: React.ReactNode;
+  subtitle?: React.ReactNode;
+  eyebrow?: React.ReactNode;
   actions?: React.ReactNode;
   children: React.ReactNode;
+  wrapChildren?: boolean;
 }) {
+  const mobileSidebarOpen = useUiStore((state) => state.mobileSidebarOpen);
+  const closeMobileSidebar = useUiStore((state) => state.closeMobileSidebar);
+
   return (
-    <div className="app-canvas flex min-h-screen bg-background">
+    <div className="shell">
+      {mobileSidebarOpen ? (
+        <button
+          aria-label="Close navigation"
+          className="fixed inset-0 z-30 bg-black/45 backdrop-blur-[1px] md:hidden"
+          onClick={closeMobileSidebar}
+          type="button"
+        />
+      ) : null}
+
       <Sidebar />
-      <div className="flex min-h-screen min-w-0 flex-1 flex-col">
+
+      <div className="main">
         <Header />
-        <main className="flex-1 px-5 py-6 lg:px-8 lg:py-8">
-          <div className="mx-auto flex max-w-[1600px] flex-col gap-6">
-            <section className="hero-gradient rounded-[32px] border border-white/10 px-6 py-7 shadow-panel lg:px-8">
-              <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-                <div className="max-w-4xl">
-                  {eyebrow ? <div className="section-label">{eyebrow}</div> : null}
-                  <h1 className="mt-4 font-display text-4xl leading-tight text-foreground lg:text-[3.25rem]">{title}</h1>
-                  {subtitle ? <p className="mt-3 max-w-3xl text-sm leading-6 text-muted lg:text-[15px]">{subtitle}</p> : null}
-                </div>
-                {actions ? <div className="flex flex-wrap items-center gap-3">{actions}</div> : null}
-              </div>
-            </section>
-            <div className="flex flex-col gap-6">{children}</div>
-          </div>
+        <main className="content">
+          <section className="ed-header">
+            <div>
+              {eyebrow ? <div className="eh-eyebrow">{eyebrow}</div> : null}
+              <h1 className="eh-h1">{title}</h1>
+              {subtitle ? <p className="eh-p">{subtitle}</p> : null}
+            </div>
+            {actions ? <div className="eh-btns">{actions}</div> : null}
+          </section>
+
+          {wrapChildren ? <div className="space-y-6 px-5 py-6 lg:px-8 lg:py-8">{children}</div> : children}
+
+          <footer className="footer">
+            <div className="footer-l">DocIQ &nbsp;·&nbsp; Last refreshed just now</div>
+            <div className="footer-r">
+              <a href="/settings">Platform settings</a>
+              <a href="#">Documentation</a>
+              <a href="#">Support</a>
+            </div>
+          </footer>
         </main>
       </div>
     </div>

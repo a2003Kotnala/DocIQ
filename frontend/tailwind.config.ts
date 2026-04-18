@@ -5,23 +5,23 @@ export default {
   theme: {
     extend: {
       colors: {
-        background: "#09141d",
-        surface: "#112131",
-        border: "#25384a",
-        foreground: "#f4f7fb",
-        muted: "#8fa4bd",
-        accent: "#38bdf8",
-        success: "#22c55e",
-        warning: "#f59e0b",
-        danger: "#f97316"
+        background: "#0c0a08",
+        surface: "#1a1612",
+        border: "#342a20",
+        foreground: "#e8ddd0",
+        muted: "#a39080",
+        accent: "#c8934a",
+        success: "#7ab88a",
+        warning: "#d3a563",
+        danger: "#c47a72"
       },
       fontFamily: {
-        display: ["Space Grotesk", "IBM Plex Sans", "Aptos Display", "sans-serif"],
-        sans: ["IBM Plex Sans", "Aptos", "Segoe UI Variable", "sans-serif"],
-        mono: ["JetBrains Mono", "IBM Plex Mono", "Consolas", "monospace"]
+        display: ["var(--font-display)", "Georgia", "serif"],
+        sans: ["var(--font-sans)", "IBM Plex Sans", "sans-serif"],
+        mono: ["var(--font-mono)", "IBM Plex Mono", "monospace"]
       },
       boxShadow: {
-        panel: "0 24px 80px rgba(1, 7, 14, 0.48)"
+        panel: "0 24px 70px rgba(0, 0, 0, 0.24)"
       }
     }
   },

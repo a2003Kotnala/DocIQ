@@ -2,16 +2,15 @@
 
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowUpRight, FilePlus2, Shield, Sparkles, Workflow } from "lucide-react";
+import { ArrowRight, FilePlus2 } from "lucide-react";
 
 import { getAnalyticsOverview } from "@/api/analytics";
 import { getReviewQueue } from "@/api/documents";
-import { OverviewCards } from "@/components/analytics/overview-cards";
-import { ReviewQueueTable } from "@/components/document/review-queue-table";
 import { AppShell } from "@/components/layout/app-shell";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { useAuthStore } from "@/stores/authStore";
+
+const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
 
 export default function DashboardPage() {
   const token = useAuthStore((state) => state.accessToken) ?? "";
@@ -28,15 +27,44 @@ export default function DashboardPage() {
     enabled: Boolean(token)
   });
 
-  const metrics = overview.data;
-  const confidenceBars = [38, 54, 49, 70, 82, 76, 88];
-  const throughputBars = [28, 42, 36, 51, 66, 58, 72];
+  const metrics =
+    overview.data ??
+    ({
+      documents_processed_today: 0,
+      documents_processed_month: 0,
+      avg_processing_time_s: 0,
+      avg_extraction_confidence: 0,
+      review_queue_depth: 0,
+      auto_approval_rate: 0,
+      cost_estimate_month: 0,
+      corrections_recorded: 0
+    } as const);
+
+  const hasDocuments = metrics.documents_processed_today > 0 || metrics.documents_processed_month > 0;
+  const confidencePercent = Math.round(metrics.avg_extraction_confidence * 100);
+  const autoApprovalPercent = Math.round(metrics.auto_approval_rate * 100);
+  const confidenceBars = [36, 52, 48, 61, 72, 68, 79].map((value) =>
+    clamp(value + Math.round(metrics.avg_extraction_confidence * 14) - 8, 18, 92)
+  );
+  const throughputBars = [28, 35, 31, 44, 58, 50, 63].map((value) =>
+    clamp(value + Math.min(metrics.documents_processed_today, 24), 12, 90)
+  );
+
+  const queueItems = reviewQueue.data?.items ?? [];
+  const queueEmpty = queueItems.length === 0;
+  const queueTag = metrics.review_queue_depth === 0 ? "Queue calm" : "Review pressure";
+  const queueTagClass = metrics.review_queue_depth === 0 ? "tag-g" : "tag-a";
 
   return (
     <AppShell
-      eyebrow="Operations overview"
-      title="Operational command for every document moving through your enterprise."
-      subtitle="Track throughput, trust posture, review pressure, and evidence-backed automation from one intelligence surface."
+      wrapChildren={false}
+      eyebrow="01 — Operations overview"
+      title={
+        <>
+          Operational command for every document moving through your <em>enterprise.</em>
+        </>
+      }
+      subtitle="Track throughput, trust posture, review pressure, and evidence-backed automation — all from one intelligence surface."
       actions={
         <>
           <Link href="/documents/upload">
@@ -46,160 +74,235 @@ export default function DashboardPage() {
             </Button>
           </Link>
           <Link href="/review-queue">
-            <Button variant="secondary">
-              <ArrowUpRight className="h-4 w-4" />
+            <Button variant="ghost">
+              <ArrowRight className="h-4 w-4" />
               Open review queue
             </Button>
           </Link>
         </>
       }
     >
-      {metrics ? <OverviewCards metrics={metrics} /> : null}
+      <div className="stat-strip">
+        <div className="stat-cell">
+          <div className="sc-lbl">Avg confidence</div>
+          <div className="sc-num amber">
+            {hasDocuments ? confidencePercent : "—"}
+            <sup>%</sup>
+          </div>
+          <div className="sc-sub">{hasDocuments ? `${autoApprovalPercent}% auto-approved` : "No documents yet"}</div>
+        </div>
+        <div className="stat-cell">
+          <div className="sc-lbl">Queue depth</div>
+          <div className="sc-num green">{metrics.review_queue_depth.toLocaleString()}</div>
+          <div className="sc-sub">Awaiting review</div>
+          <div className={`sc-tag ${queueTagClass}`}>{queueTag}</div>
+        </div>
+        <div className="stat-cell">
+          <div className="sc-lbl">Automation runway</div>
+          <div className="sc-num">{hasDocuments ? Math.max(Math.min(confidencePercent, 100), 0) : "—"}</div>
+          <div className="sc-sub">{hasDocuments ? "In safe confidence band" : "No signal yet"}</div>
+        </div>
+        <div className="stat-cell">
+          <div className="sc-lbl">Throughput · 7d</div>
+          <div className="sc-num">{hasDocuments ? metrics.documents_processed_today.toLocaleString() : "0"}</div>
+          <div className="sc-sub">Documents processed</div>
+          <div className="sc-tag tag-d">{hasDocuments ? "Operating" : "Idle"}</div>
+        </div>
+      </div>
 
-      <div className="grid gap-4 xl:grid-cols-[1.3fr,0.7fr]">
-        <Card className="p-6">
-          <div className="relative z-10">
-            <div className="flex items-center justify-between gap-4">
-              <div>
-                <div className="metric-kicker">Confidence posture</div>
-                <h2 className="mt-3 font-display text-2xl text-foreground">Extraction trust is visible before humans have to intervene.</h2>
+      <div className="body-grid">
+        <div className="lp">
+          <div className="lp-sec">
+            <div className="sec-eyebrow">
+              <span className="se-num">02</span>
+              <span className="se-lbl">Confidence posture</span>
+              <div className="se-line" />
+            </div>
+            <div className="sec-h">Extraction trust is visible before humans have to intervene.</div>
+            <div className="sec-p">
+              Confidence, rule checks, and citation anchors remain attached to every extracted field before approval or routing.
+            </div>
+
+            <div className="gauge-row">
+              <div className="gauge-big">
+                {hasDocuments ? confidencePercent : "—"}
+                <sup>%</sup>
               </div>
-              <div className="rounded-2xl border border-sky-300/18 bg-sky-300/10 px-4 py-3 text-right">
-                <div className="metric-kicker">Average confidence</div>
-                <div className="mt-2 text-2xl font-semibold text-foreground">
-                  {Math.round((metrics?.avg_extraction_confidence ?? 0) * 100)}%
+              <div className="gauge-meta">
+                <div className="gm-lbl">Avg confidence score</div>
+                <div className="gm-track">
+                  <div className="gm-fill" style={{ width: `${hasDocuments ? confidencePercent : 0}%` }} />
+                </div>
+                <div className="gm-range">
+                  <span>0</span>
+                  <span>threshold · 60</span>
+                  <span>100</span>
                 </div>
               </div>
             </div>
-            <div className="mt-6 grid gap-5 lg:grid-cols-[1.15fr,0.85fr]">
-              <div className="rounded-[24px] border border-white/8 bg-white/[0.03] p-5">
-                <div className="metric-kicker">Weekly confidence contour</div>
-                <div className="mt-6 flex h-48 items-end gap-3">
-                  {confidenceBars.map((value, index) => (
-                    <div key={`confidence-${index}`} className="flex flex-1 flex-col items-center gap-3">
-                      <div
-                        className="w-full rounded-full bg-[linear-gradient(180deg,rgba(135,232,255,0.95),rgba(14,165,233,0.2))]"
-                        style={{ height: `${value}%` }}
-                      />
-                      <span className="text-[11px] uppercase tracking-[0.16em] text-muted">
-                        {["M", "T", "W", "T", "F", "S", "S"][index]}
-                      </span>
-                    </div>
-                  ))}
+
+            <div className="chart-days">
+              <span>Mon</span>
+              <span>Tue</span>
+              <span>Wed</span>
+              <span>Thu</span>
+              <span>Fri</span>
+              <span>Sat</span>
+              <span>Sun</span>
+            </div>
+            <div className="chart-wrap" role="img" aria-label="Weekly confidence contour">
+              <div className="thru-bars" style={{ height: "100%" }}>
+                {confidenceBars.map((value, index) => (
+                  <div key={`confidence-${index}`} className="thru-col">
+                    <div className="thru-bar" style={{ height: `${hasDocuments ? value : 0}%` }} />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="insight-row">
+              <div className="itag">
+                <div className="itag-dot" style={{ background: "var(--green)" }} />
+                <div>
+                  <strong>Validation healthy</strong> — all rule checks passing, no anomalies flagged.
                 </div>
               </div>
-              <div className="space-y-4">
-                <div className="rounded-[24px] border border-emerald-300/12 bg-emerald-400/8 p-5">
-                  <div className="flex items-center gap-3">
-                    <Shield className="h-5 w-5 text-emerald-200" />
-                    <div className="font-semibold text-foreground">Validation and traceability are healthy</div>
-                  </div>
-                  <p className="mt-3 text-sm leading-6 text-muted">
-                    Confidence, rule checks, and citation anchors remain attached to every extracted field before approval or routing.
-                  </p>
-                </div>
-                <div className="rounded-[24px] border border-white/8 bg-white/[0.03] p-5">
-                  <div className="metric-kicker">Automation runway</div>
-                  <div className="mt-4 flex items-center gap-3">
-                    <Workflow className="h-5 w-5 text-sky-200" />
-                    <div className="text-sm leading-6 text-muted">
-                      Low-friction approvals happen when confidence and validation thresholds land within safe bands.
-                    </div>
-                  </div>
+              <div className="itag">
+                <div className="itag-dot" style={{ background: "var(--amber)" }} />
+                <div>
+                  <strong>Automation runway</strong> — approvals run when confidence lands within safe band.
                 </div>
               </div>
             </div>
           </div>
-        </Card>
 
-        <Card className="p-6">
-          <div className="relative z-10">
-            <div className="metric-kicker">System health</div>
-            <h2 className="mt-3 font-display text-2xl text-foreground">Signal quality across ingestion, review, and workflow execution.</h2>
-            <div className="mt-6 space-y-4">
-              {[
-                ["API responsiveness", "Within latency target", "text-emerald-300"],
-                ["Worker availability", "OCR, extraction, and validation online", "text-sky-300"],
-                ["Observability", "Queues and retries visible in Grafana", "text-emerald-300"]
-              ].map(([label, value, tone]) => (
-                <div key={label} className="rounded-[22px] border border-white/8 bg-white/[0.03] p-4">
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="text-sm font-semibold text-foreground">{label}</div>
-                    <span className={`status-dot ${tone}`} />
-                  </div>
-                  <div className="mt-2 text-sm leading-6 text-muted">{value}</div>
-                </div>
-              ))}
+          <div className="lp-sec" style={{ borderBottom: "none" }}>
+            <div className="sec-eyebrow">
+              <span className="se-num">03</span>
+              <span className="se-lbl">Throughput</span>
+              <div className="se-line" />
             </div>
-            <div className="mt-6 rounded-[24px] border border-white/8 bg-white/[0.03] p-5">
-              <div className="metric-kicker">Throughput contour</div>
-              <div className="mt-5 flex h-28 items-end gap-2">
+            <div className="sec-h">Signal quality across ingestion, review, and workflow execution.</div>
+            <div className="sec-p" style={{ marginBottom: 18 }}>
+              Volume of documents processed per day over the last 7 days, across all ingestion channels.
+            </div>
+
+            <div className="thru-meta">
+              <span className="thru-lbl">Daily volume · last 7 days</span>
+              <span className="thru-total">{metrics.documents_processed_month.toLocaleString()} total</span>
+            </div>
+            <div className="thru-wrap" role="img" aria-label="7-day throughput bar chart">
+              <div className="thru-bars">
                 {throughputBars.map((value, index) => (
-                  <div key={`throughput-${index}`} className="flex flex-1 flex-col items-center gap-2">
-                    <div
-                      className="w-full rounded-full bg-[linear-gradient(180deg,rgba(34,197,94,0.9),rgba(34,197,94,0.15))]"
-                      style={{ height: `${value}%` }}
-                    />
-                    <span className="text-[10px] uppercase tracking-[0.16em] text-muted">{index + 1}</span>
+                  <div key={`throughput-${index}`} className="thru-col">
+                    <div className="thru-bar" style={{ height: `${hasDocuments ? value : 0}%` }} />
+                    <span>{["M", "T", "W", "T", "F", "S", "S"][index]}</span>
                   </div>
                 ))}
               </div>
             </div>
           </div>
-        </Card>
-      </div>
-
-      <div className="grid gap-4 xl:grid-cols-[1.15fr,0.85fr]">
-        <div>
-          <div className="mb-4 flex items-center justify-between gap-3">
-            <div>
-              <div className="metric-kicker">Review queue preview</div>
-              <div className="mt-2 text-lg font-semibold text-foreground">Documents that still need human judgement.</div>
-            </div>
-            <Link href="/review-queue" className="text-sm font-medium text-sky-100">
-              View full queue
-            </Link>
-          </div>
-          <ReviewQueueTable items={reviewQueue.data?.items ?? []} />
         </div>
 
-        <Card className="p-6">
-          <div className="relative z-10">
-            <div className="metric-kicker">Operator guidance</div>
-            <h2 className="mt-3 font-display text-2xl text-foreground">What high-performing teams do next.</h2>
-            <div className="mt-6 space-y-4">
-              {[
-                {
-                  icon: Sparkles,
-                  title: "Escalate disagreement cases first",
-                  copy: "Documents where rule extraction and LLM extraction diverge are the fastest source of quality gains."
-                },
-                {
-                  icon: Shield,
-                  title: "Approve only when confidence and validation align",
-                  copy: "Use the evidence-linked review workspace to confirm low-confidence fields before triggering downstream systems."
-                },
-                {
-                  icon: Workflow,
-                  title: "Automate predictable approvals",
-                  copy: "Stable document classes should graduate into workflow paths that eliminate repetitive human handling."
-                }
-              ].map(({ icon: Icon, title, copy }) => (
-                <div key={title} className="rounded-[24px] border border-white/8 bg-white/[0.03] p-5">
-                  <div className="flex items-start gap-3">
-                    <div className="grid h-10 w-10 place-items-center rounded-2xl border border-white/10 bg-white/[0.03] text-sky-100">
-                      <Icon className="h-4 w-4" />
-                    </div>
-                    <div>
-                      <div className="text-sm font-semibold text-foreground">{title}</div>
-                      <p className="mt-2 text-sm leading-6 text-muted">{copy}</p>
-                    </div>
-                  </div>
-                </div>
-              ))}
+        <div className="rp">
+          <div className="rp-blk">
+            <div className="rp-h">System health</div>
+            <div className="h-item">
+              <div className="h-bar hb-g" />
+              <div>
+                <div className="h-name">API responsiveness</div>
+                <div className="h-sub">Within latency target</div>
+              </div>
+              <div className="h-badge hb-bg">Healthy</div>
+            </div>
+            <div className="h-item">
+              <div className="h-bar hb-g" />
+              <div>
+                <div className="h-name">Worker availability</div>
+                <div className="h-sub">OCR, extraction, validation online</div>
+              </div>
+              <div className="h-badge hb-bg">Online</div>
+            </div>
+            <div className="h-item">
+              <div className="h-bar hb-g" />
+              <div>
+                <div className="h-name">Observability</div>
+                <div className="h-sub">Queues and retries visible in Grafana</div>
+              </div>
+              <div className="h-badge hb-bg">Active</div>
+            </div>
+            <div className="h-item">
+              <div className="h-bar hb-a" />
+              <div>
+                <div className="h-name">Throughput signal</div>
+                <div className="h-sub">{hasDocuments ? "Operating within baseline" : "No documents ingested yet"}</div>
+              </div>
+              <div className="h-badge hb-ba">{hasDocuments ? "Flowing" : "Idle"}</div>
+            </div>
+
+            <div className="auto-note">
+              <div className="an-icon" aria-hidden="true">
+                <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.4">
+                  <path d="M6 1l1.5 3h3l-2.5 2 1 3L6 7.5 3 9l1-3L1.5 4h3z" />
+                </svg>
+              </div>
+              <div className="an-txt">
+                <strong>Low-friction approvals</strong> happen when confidence and validation thresholds land within safe bands.{" "}
+                {metrics.review_queue_depth === 0 ? "Nothing in queue right now." : "Review queue has pending work."}
+              </div>
             </div>
           </div>
-        </Card>
+
+          {queueEmpty ? (
+            <div className="rp-blk q-empty">
+              <div className="rp-h" style={{ textAlign: "center" }}>
+                Review queue
+              </div>
+              <div className="qe-icon" aria-hidden="true">
+                <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M2 9l5 5 9-9" />
+                </svg>
+              </div>
+              <div className="qe-h">Nothing waiting for review.</div>
+              <div className="qe-p">
+                When low-confidence or failed-validation documents arrive, they'll appear here with confidence scores, status, and direct review actions.
+              </div>
+            </div>
+          ) : (
+            <div className="rp-blk">
+              <div className="rp-h" style={{ textAlign: "center" }}>
+                Review queue
+              </div>
+              {queueItems.slice(0, 4).map((item) => (
+                <div key={item.id} className="h-item">
+                  <div className="h-bar hb-a" />
+                  <div>
+                    <div className="h-name">{item.original_filename}</div>
+                    <div className="h-sub">
+                      {item.status.replaceAll("_", " ")} ·{" "}
+                      {item.overall_extraction_confidence === null || item.overall_extraction_confidence === undefined
+                        ? "N/A"
+                        : `${Math.round(item.overall_extraction_confidence * 100)}%`}
+                    </div>
+                  </div>
+                  <Link className="h-badge hb-ba" href={`/documents/${item.id}`}>
+                    Review
+                  </Link>
+                </div>
+              ))}
+              <div className="auto-note">
+                <div className="an-icon" aria-hidden="true">
+                  <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.4">
+                    <path d="M6 1l1.5 3h3l-2.5 2 1 3L6 7.5 3 9l1-3L1.5 4h3z" />
+                  </svg>
+                </div>
+                <div className="an-txt">
+                  <strong>Queue pressure</strong> is elevated. Prioritize low-confidence documents first.
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </AppShell>
   );
