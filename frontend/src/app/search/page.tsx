@@ -36,9 +36,9 @@ export default function SearchPage() {
               </Button>
             </div>
           </div>
-          <div className="rounded-[24px] border border-white/8 bg-white/[0.03] px-4 py-4 xl:w-[320px]">
+          <div className="rounded-[24px] border border-[rgba(220,180,110,0.12)] bg-[rgba(255,255,255,0.02)] px-4 py-4 xl:w-[320px]">
             <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
-              <ShieldCheck className="h-4 w-4 text-emerald-200" />
+              <ShieldCheck className="h-4 w-4 text-success" />
               Retrieval posture
             </div>
             <p className="mt-2 text-sm leading-6 text-muted">

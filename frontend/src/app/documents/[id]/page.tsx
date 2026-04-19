@@ -48,9 +48,9 @@ export default function DocumentDetailPage() {
                     icon: BadgeCheck
                   }
                 ].map(({ label, value, icon: Icon }) => (
-                  <div key={label} className="rounded-[22px] border border-white/8 bg-white/[0.03] p-4">
+                  <div key={label} className="rounded-[22px] border border-[rgba(220,180,110,0.12)] bg-[rgba(255,255,255,0.02)] p-4">
                     <div className="flex items-center gap-3">
-                      <div className="grid h-10 w-10 place-items-center rounded-2xl border border-white/10 bg-white/[0.03] text-sky-100">
+                      <div className="grid h-10 w-10 place-items-center rounded-2xl border border-[rgba(220,180,110,0.12)] bg-[rgba(200,147,74,0.08)] text-accent">
                         <Icon className="h-4 w-4" />
                       </div>
                       <div>

@@ -56,7 +56,7 @@ export default function LoginPage() {
           ].map(({ title, copy, icon: Icon }) => (
             <Card key={title} className="p-5">
               <div className="relative z-10">
-                <div className="grid h-11 w-11 place-items-center rounded-2xl border border-white/10 bg-white/[0.03] text-sky-100">
+                <div className="grid h-11 w-11 place-items-center rounded-2xl border border-[rgba(220,180,110,0.12)] bg-[rgba(200,147,74,0.08)] text-accent">
                   <Icon className="h-5 w-5" />
                 </div>
                 <div className="mt-4 text-lg font-semibold text-foreground">{title}</div>
@@ -93,7 +93,7 @@ export default function LoginPage() {
                 Sign in to DocIQ
               </Button>
             </form>
-            <div className="mt-6 rounded-[22px] border border-white/8 bg-white/[0.03] p-4 text-sm leading-6 text-muted">
+            <div className="mt-6 rounded-[22px] border border-[rgba(220,180,110,0.12)] bg-[rgba(255,255,255,0.02)] p-4 text-sm leading-6 text-muted">
               Seeded access is prefilled for local development so you can move directly into review, search, and workflow flows.
             </div>
           </div>

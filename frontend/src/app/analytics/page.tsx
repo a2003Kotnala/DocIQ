@@ -35,10 +35,10 @@ export default function AnalyticsPage() {
               {performanceBars.map((value, index) => (
                 <div key={`processing-${index}`} className="flex flex-1 flex-col items-center gap-3">
                   <div
-                    className="w-full rounded-full bg-[linear-gradient(180deg,rgba(135,232,255,0.95),rgba(14,165,233,0.18))]"
+                    className="w-full rounded-full bg-[linear-gradient(180deg,rgba(224,173,108,0.96),rgba(200,147,74,0.18))]"
                     style={{ height: `${value}%` }}
                   />
-                  <span className="text-[10px] uppercase tracking-[0.16em] text-muted">{index + 1}</span>
+                  <span className="text-[10px] uppercase tracking-[0.16em] text-[color:var(--text-3)]">{index + 1}</span>
                 </div>
               ))}
             </div>
@@ -52,10 +52,10 @@ export default function AnalyticsPage() {
               {accuracyBars.map((value, index) => (
                 <div key={`accuracy-${index}`} className="flex flex-1 flex-col items-center gap-3">
                   <div
-                    className="w-full rounded-full bg-[linear-gradient(180deg,rgba(34,197,94,0.94),rgba(34,197,94,0.18))]"
+                    className="w-full rounded-full bg-[linear-gradient(180deg,rgba(122,184,138,0.96),rgba(122,184,138,0.18))]"
                     style={{ height: `${value}%` }}
                   />
-                  <span className="text-[10px] uppercase tracking-[0.16em] text-muted">{index + 1}</span>
+                  <span className="text-[10px] uppercase tracking-[0.16em] text-[color:var(--text-3)]">{index + 1}</span>
                 </div>
               ))}
             </div>

@@ -2,14 +2,18 @@ import * as React from "react";
 
 import { cn } from "@/lib/utils";
 
-export function Input(props: React.InputHTMLAttributes<HTMLInputElement>) {
+export const Input = React.forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLInputElement>>(function Input(
+  { className, ...props },
+  ref
+) {
   return (
     <input
+      ref={ref}
       {...props}
       className={cn(
-        "h-12 w-full rounded-2xl border border-white/10 bg-[rgba(9,18,28,0.86)] px-4 text-sm text-slate-100 outline-none transition placeholder:text-slate-500 focus:border-sky-300/40 focus:bg-[rgba(12,24,36,0.96)] focus:shadow-[0_0_0_4px_rgba(56,189,248,0.08)]",
-        props.className
+        "h-11 w-full rounded-xl border border-[rgba(220,180,110,0.14)] bg-[rgba(255,255,255,0.02)] px-4 text-sm text-foreground outline-none transition placeholder:text-[color:var(--text-3)] focus:border-[rgba(224,173,108,0.4)] focus:bg-[rgba(255,255,255,0.03)] focus:shadow-[0_0_0_4px_rgba(200,147,74,0.12)] disabled:cursor-not-allowed disabled:opacity-60",
+        className
       )}
     />
   );
-}
+});
