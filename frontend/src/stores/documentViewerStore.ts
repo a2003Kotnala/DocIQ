@@ -12,6 +12,7 @@ interface DocumentViewerState {
   activeTab: "fields" | "validation" | "history" | "workflow";
   setDocumentId: (documentId: string) => void;
   setCurrentPage: (page: number) => void;
+  setZoomLevel: (zoomLevel: number) => void;
   selectField: (fieldId: string | null, bbox?: Record<string, unknown> | null) => void;
   setActiveTab: (tab: DocumentViewerState["activeTab"]) => void;
 }
@@ -26,6 +27,7 @@ export const useDocumentViewerStore = create<DocumentViewerState>((set) => ({
   activeTab: "fields",
   setDocumentId: (documentId) => set({ documentId }),
   setCurrentPage: (currentPage) => set({ currentPage }),
+  setZoomLevel: (zoomLevel) => set({ zoomLevel }),
   selectField: (selectedFieldId, highlightedBbox = null) => set({ selectedFieldId, highlightedBbox }),
   setActiveTab: (activeTab) => set({ activeTab })
 }));

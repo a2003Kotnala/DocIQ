@@ -2,10 +2,17 @@ import { cn } from "@/lib/utils";
 
 export function Card({
   className,
-  children
-}: {
-  className?: string;
-  children: React.ReactNode;
+  children,
+  variant = "panel",
+  ...props
+}: React.HTMLAttributes<HTMLDivElement> & {
+  variant?: "panel" | "glass";
 }) {
-  return <div className={cn("panel-surface card-glow rounded-2xl", className)}>{children}</div>;
+  const variantClass = variant === "glass" ? "glass-surface" : "panel-surface";
+
+  return (
+    <div {...props} className={cn(variantClass, "card-glow rounded-2xl", className)}>
+      {children}
+    </div>
+  );
 }

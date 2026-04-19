@@ -25,7 +25,7 @@ export function WorkflowList({ workflows }: { workflows: WorkflowDefinition[] })
           <div className="relative z-10">
             <div className="flex items-start justify-between gap-4">
               <div className="flex items-start gap-4">
-                <div className="grid h-12 w-12 place-items-center rounded-2xl border border-sky-300/16 bg-sky-300/10 text-sky-100">
+                <div className="grid h-12 w-12 place-items-center rounded-2xl border border-[rgba(220,180,110,0.12)] bg-[rgba(200,147,74,0.08)] text-accent">
                   <GitBranchPlus className="h-5 w-5" />
                 </div>
                 <div>
@@ -36,28 +36,28 @@ export function WorkflowList({ workflows }: { workflows: WorkflowDefinition[] })
               <div
                 className={
                   workflow.is_active
-                    ? "rounded-full border border-emerald-300/20 bg-emerald-400/10 px-3 py-1.5 text-xs font-semibold text-emerald-200"
-                    : "rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs font-semibold text-muted"
+                    ? "rounded-full border border-[rgba(122,184,138,0.24)] bg-[rgba(122,184,138,0.12)] px-3 py-1.5 text-xs font-semibold text-success"
+                    : "rounded-full border border-[rgba(220,180,110,0.12)] bg-[rgba(255,255,255,0.02)] px-3 py-1.5 text-xs font-semibold text-muted"
                 }
               >
                 {workflow.is_active ? "Active" : "Draft"}
               </div>
             </div>
             <div className="mt-6 grid gap-3 sm:grid-cols-3">
-              <div className="rounded-2xl border border-white/8 bg-white/[0.03] p-4">
+              <div className="rounded-2xl border border-[rgba(220,180,110,0.12)] bg-[rgba(255,255,255,0.02)] p-4">
                 <div className="metric-kicker">Trigger</div>
                 <div className="mt-2 text-xl font-semibold text-foreground">1</div>
               </div>
-              <div className="rounded-2xl border border-white/8 bg-white/[0.03] p-4">
+              <div className="rounded-2xl border border-[rgba(220,180,110,0.12)] bg-[rgba(255,255,255,0.02)] p-4">
                 <div className="metric-kicker">Conditions</div>
                 <div className="mt-2 text-xl font-semibold text-foreground">{workflow.conditions.length}</div>
               </div>
-              <div className="rounded-2xl border border-white/8 bg-white/[0.03] p-4">
+              <div className="rounded-2xl border border-[rgba(220,180,110,0.12)] bg-[rgba(255,255,255,0.02)] p-4">
                 <div className="metric-kicker">Actions</div>
                 <div className="mt-2 text-xl font-semibold text-foreground">{workflow.actions.length}</div>
               </div>
             </div>
-            <div className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-sky-100">
+            <div className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-accent">
               Workflow posture visible
               <ArrowRight className="h-4 w-4" />
             </div>

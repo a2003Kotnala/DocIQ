@@ -35,7 +35,7 @@ export default function SettingsPage() {
         ].map(({ title, copy, icon: Icon }) => (
           <Card key={title} className="p-5">
             <div className="relative z-10">
-              <div className="grid h-11 w-11 place-items-center rounded-2xl border border-white/10 bg-white/[0.03] text-sky-100">
+              <div className="grid h-11 w-11 place-items-center rounded-2xl border border-[rgba(220,180,110,0.12)] bg-[rgba(200,147,74,0.08)] text-accent">
                 <Icon className="h-5 w-5" />
               </div>
               <div className="mt-4 text-lg font-semibold text-foreground">{title}</div>

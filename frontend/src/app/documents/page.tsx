@@ -49,7 +49,7 @@ export default function DocumentsPage() {
               ["In review", (documents.data?.items ?? []).filter((doc) => doc.status.includes("REVIEW")).length],
               ["Ready", (documents.data?.items ?? []).filter((doc) => doc.status === "READY" || doc.status === "APPROVED").length]
             ].map(([label, value]) => (
-              <div key={label} className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3">
+              <div key={label} className="rounded-2xl border border-[rgba(220,180,110,0.12)] bg-[rgba(255,255,255,0.02)] px-4 py-3">
                 <div className="metric-kicker">{label}</div>
                 <div className="mt-2 text-xl font-semibold text-foreground">{value}</div>
               </div>
@@ -59,17 +59,17 @@ export default function DocumentsPage() {
       </Card>
 
       <div className="app-table">
-        <div className="app-table-header hidden grid-cols-[minmax(0,2.6fr)_1fr_1fr_auto] gap-4 px-6 py-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted md:grid">
+        <div className="app-table-header hidden grid-cols-[minmax(0,2.6fr)_1fr_1fr_auto] gap-4 px-6 py-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-[color:var(--text-3)] md:grid">
           <span>Name</span>
           <span>Status</span>
           <span>Confidence</span>
           <span>Open</span>
         </div>
-        <div className="divide-y divide-white/5">
+        <div className="divide-y divide-[rgba(220,180,110,0.08)]">
           {(documents.data?.items ?? []).map((document) => (
             <div key={document.id} className="app-table-row grid gap-4 px-5 py-5 md:grid-cols-[minmax(0,2.6fr)_1fr_1fr_auto] md:px-6">
               <div className="flex items-start gap-4">
-                <div className="grid h-11 w-11 place-items-center rounded-2xl border border-white/8 bg-white/[0.03] text-sky-100">
+                <div className="grid h-11 w-11 place-items-center rounded-2xl border border-[rgba(220,180,110,0.12)] bg-[rgba(200,147,74,0.08)] text-accent">
                   <FileText className="h-4 w-4" />
                 </div>
                 <div className="min-w-0">
@@ -85,7 +85,7 @@ export default function DocumentsPage() {
               </div>
               <div className="flex items-center">
                 <Link
-                  className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.03] px-3 py-2 text-sm font-medium text-foreground transition hover:border-sky-300/20 hover:bg-sky-300/10"
+                  className="inline-flex items-center gap-2 rounded-2xl border border-[rgba(220,180,110,0.12)] bg-[rgba(255,255,255,0.02)] px-3 py-2 text-sm font-medium text-foreground transition hover:border-[rgba(220,180,110,0.22)] hover:bg-[rgba(220,180,110,0.05)]"
                   href={`/documents/${document.id}`}
                 >
                   View

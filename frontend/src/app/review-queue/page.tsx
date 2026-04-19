@@ -44,7 +44,10 @@ export default function ReviewQueuePage() {
                 "Rule-vs-LLM disagreements surface high-learning-value examples for the feedback loop.",
                 "Rejected or corrected documents create the strongest retraining signals."
               ].map((item) => (
-                <div key={item} className="rounded-[22px] border border-white/8 bg-white/[0.03] p-4 text-sm leading-6 text-muted">
+                <div
+                  key={item}
+                  className="rounded-[22px] border border-[rgba(220,180,110,0.12)] bg-[rgba(255,255,255,0.02)] p-4 text-sm leading-6 text-muted"
+                >
                   {item}
                 </div>
               ))}
