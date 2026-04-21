@@ -19,6 +19,20 @@ export function FieldList({
   const selectField = useDocumentViewerStore((state) => state.selectField);
   const selectedFieldId = useDocumentViewerStore((state) => state.selectedFieldId);
 
+  if (!fields.length) {
+    return (
+      <Card className="p-6">
+        <div className="relative z-10">
+          <div className="section-label">No extracted fields</div>
+          <div className="mt-4 font-display text-2xl text-foreground">Extraction output will appear here.</div>
+          <p className="mt-3 text-sm leading-6 text-muted">
+            As soon as the pipeline finishes extraction, every field will be listed with confidence, validation notes, and evidence-linked highlighting.
+          </p>
+        </div>
+      </Card>
+    );
+  }
+
   return (
     <div className="space-y-4">
       {fields.map((field) => {

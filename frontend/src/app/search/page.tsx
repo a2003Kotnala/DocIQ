@@ -13,6 +13,7 @@ import { useSearch } from "@/hooks/useSearch";
 export default function SearchPage() {
   const [query, setQuery] = useState("invoice exceptions above approval threshold");
   const search = useSearch();
+  const canSearch = query.trim().length > 0 && !search.isPending;
 
   return (
     <AppShell
@@ -30,7 +31,7 @@ export default function SearchPage() {
                 onChange={(event) => setQuery(event.target.value)}
                 placeholder="Search across documents, clauses, extracted fields, and evidence spans"
               />
-              <Button onClick={() => search.mutate(query)}>
+              <Button isLoading={search.isPending} onClick={() => search.mutate(query)} disabled={!canSearch}>
                 <Search className="h-4 w-4" />
                 Search
               </Button>
@@ -47,7 +48,7 @@ export default function SearchPage() {
           </div>
         </div>
       </Card>
-      <SearchResults results={search.data?.results ?? []} />
+      <SearchResults results={search.data?.results ?? []} isLoading={search.isPending} />
     </AppShell>
   );
 }

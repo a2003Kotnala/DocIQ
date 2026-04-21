@@ -2,9 +2,46 @@ import Link from "next/link";
 import { ArrowUpRight, ScanSearch } from "lucide-react";
 
 import { Card } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { SearchResult } from "@/types/api";
 
-export function SearchResults({ results }: { results: SearchResult[] }) {
+export function SearchResults({ results, isLoading = false }: { results: SearchResult[]; isLoading?: boolean }) {
+  if (isLoading && !results.length) {
+    return (
+      <div className="space-y-4">
+        {[0, 1, 2].map((index) => (
+          <Card key={`search-skeleton-${index}`} className="p-5 lg:p-6">
+            <div className="relative z-10 space-y-4">
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <Skeleton className="h-10 w-10 rounded-2xl" />
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-56" />
+                    <Skeleton className="h-3 w-24" />
+                  </div>
+                </div>
+                <Skeleton className="h-14 w-28 rounded-2xl" />
+              </div>
+              <div className="space-y-2">
+                <Skeleton className="h-3 w-full" />
+                <Skeleton className="h-3 w-[92%]" />
+                <Skeleton className="h-3 w-[78%]" />
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {[0, 1, 2].map((pill) => (
+                  <Skeleton key={`pill-${index}-${pill}`} className="h-7 w-20 rounded-full" />
+                ))}
+              </div>
+              <div>
+                <Skeleton className="h-9 w-36 rounded-2xl" />
+              </div>
+            </div>
+          </Card>
+        ))}
+      </div>
+    );
+  }
+
   if (!results.length) {
     return (
       <Card className="p-8">

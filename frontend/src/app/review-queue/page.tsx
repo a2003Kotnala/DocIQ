@@ -9,6 +9,7 @@ import { ReviewQueueTable } from "@/components/document/review-queue-table";
 import { AppShell } from "@/components/layout/app-shell";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useAuthStore } from "@/stores/authStore";
 
 export default function ReviewQueuePage() {
@@ -18,6 +19,7 @@ export default function ReviewQueuePage() {
     queryFn: () => getReviewQueue(token),
     enabled: Boolean(token)
   });
+  const isPending = queue.isPending;
 
   return (
     <AppShell
@@ -57,14 +59,21 @@ export default function ReviewQueuePage() {
         <Card className="p-6">
           <div className="relative z-10">
             <div className="metric-kicker">Queue depth</div>
-            <div className="mt-3 text-5xl font-display text-foreground">{queue.data?.total ?? queue.data?.items.length ?? 0}</div>
+            {isPending ? (
+              <div className="mt-4 max-w-[220px] space-y-2">
+                <Skeleton className="h-12 w-24" />
+                <Skeleton className="h-4 w-[180px]" />
+              </div>
+            ) : (
+              <div className="mt-3 text-5xl font-display text-foreground">{queue.data?.total ?? queue.data?.items.length ?? 0}</div>
+            )}
             <p className="mt-3 text-sm leading-6 text-muted">
               Documents currently sit in the review queue when extraction confidence is too low, validation rules fail, or classification needs human confirmation.
             </p>
           </div>
         </Card>
       </div>
-      <ReviewQueueTable items={queue.data?.items ?? []} />
+      <ReviewQueueTable items={queue.data?.items ?? []} isLoading={isPending} />
     </AppShell>
   );
 }

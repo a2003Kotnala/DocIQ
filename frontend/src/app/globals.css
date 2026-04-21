@@ -578,10 +578,41 @@ a {
   animation: dociq-dropdown-out 120ms ease-in;
 }
 
+@keyframes dociq-shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.dociq-skeleton {
+  position: relative;
+  overflow: hidden;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(220, 180, 110, 0.08);
+}
+
+.dociq-skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(224, 173, 108, 0.14), transparent);
+  animation: dociq-shimmer 1.35s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .dociq-dropdown[data-state="open"],
   .dociq-dropdown[data-state="closed"] {
     animation: none;
+  }
+
+  .dociq-skeleton::after {
+    animation: none;
+    background: transparent;
   }
 }
 

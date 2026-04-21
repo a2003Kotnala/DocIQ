@@ -6,6 +6,7 @@ import { getAnalyticsOverview } from "@/api/analytics";
 import { OverviewCards } from "@/components/analytics/overview-cards";
 import { AppShell } from "@/components/layout/app-shell";
 import { Card } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useAuthStore } from "@/stores/authStore";
 
 export default function AnalyticsPage() {
@@ -15,6 +16,7 @@ export default function AnalyticsPage() {
     queryFn: () => getAnalyticsOverview(token),
     enabled: Boolean(token)
   });
+  const isPending = overview.isPending;
 
   const performanceBars = [28, 36, 42, 55, 60, 72, 84];
   const accuracyBars = [52, 58, 64, 68, 76, 82, 90];
@@ -25,7 +27,29 @@ export default function AnalyticsPage() {
       title="Measure throughput, accuracy, review pressure, and cost in one executive-grade analytics surface."
       subtitle="DocIQ exposes both operational and business outcomes so teams can improve extraction quality, reduce manual review load, and defend ROI."
     >
-      {overview.data ? <OverviewCards metrics={overview.data} /> : null}
+      {overview.data ? (
+        <OverviewCards metrics={overview.data} />
+      ) : isPending ? (
+        <div className="grid gap-4 lg:grid-cols-2 2xl:grid-cols-4">
+          {[0, 1, 2, 3].map((index) => (
+            <Card key={`overview-skeleton-${index}`} className="p-5 lg:p-6">
+              <div className="relative z-10">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="space-y-3">
+                    <Skeleton className="h-3 w-28" />
+                    <Skeleton className="h-10 w-32" />
+                  </div>
+                  <Skeleton className="h-11 w-11 rounded-lg" />
+                </div>
+                <div className="mt-5 flex items-end justify-between gap-4">
+                  <Skeleton className="h-3 w-44" />
+                  <Skeleton className="h-6 w-24 rounded-full" />
+                </div>
+              </div>
+            </Card>
+          ))}
+        </div>
+      ) : null}
       <div className="grid gap-4 xl:grid-cols-2">
         <Card className="p-6">
           <div className="relative z-10">
