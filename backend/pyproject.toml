@@ -66,6 +66,6 @@ include = ["app*", "workers*"]
 exclude = ["alembic*", "tests*"]
 
 [build-system]
-requires = ["setuptools>=75.1.0"]
+requires = ["setuptools>=75.1.0", "wheel"]
 build-backend = "setuptools.build_meta"
 

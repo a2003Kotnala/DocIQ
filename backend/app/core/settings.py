@@ -28,10 +28,15 @@ class Settings(BaseSettings):
     s3_bucket: str = "dociq"
     s3_region: str = "us-east-1"
     s3_use_ssl: bool = False
-    openai_api_key: SecretStr | None = None
-    openai_embedding_model: str = "text-embedding-3-small"
-    openai_extraction_model: str = "gpt-4o-mini"
+    # LLM Configuration — primary uses free models, Gemini API is the fallback
+    gemini_api_key: SecretStr | None = None
+    gemini_model: str = "gemini-2.0-flash"
+    gemini_embedding_model: str = "models/text-embedding-004"
+    # Free/self-hosted model settings
     self_hosted_llm: bool = False
+    free_llm_base_url: str = "https://openrouter.ai/api/v1"
+    free_llm_model: str = "google/gemma-3-27b-it:free"
+    free_embedding_model: str = "BAAI/bge-small-en-v1.5"
     default_page_size: int = 20
     max_page_size: int = 100
     max_upload_size_mb: int = 50
