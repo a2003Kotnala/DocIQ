@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LockKeyhole, ScanText, ShieldCheck } from "lucide-react";
 
 import { login } from "@/api/auth";
@@ -13,8 +13,16 @@ import { useAuthStore } from "@/stores/authStore";
 export default function LoginPage() {
   const router = useRouter();
   const setSession = useAuthStore((state) => state.setSession);
+  const accessToken = useAuthStore((state) => state.accessToken);
+  const hasHydrated = useAuthStore((state) => state.hasHydrated);
   const [form, setForm] = useState({ email: "admin@dociq.test", password: "password123", org_slug: "seed-org" });
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!hasHydrated) return;
+    if (!accessToken) return;
+    router.replace("/dashboard");
+  }, [accessToken, hasHydrated, router]);
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
@@ -29,6 +37,27 @@ export default function LoginPage() {
     } catch (submissionError) {
       setError(submissionError instanceof Error ? submissionError.message : "Login failed");
     }
+  }
+
+  if (!hasHydrated || accessToken) {
+    return (
+      <main className="app-canvas grid min-h-screen place-items-center px-6 py-10">
+        <div className="panel-surface card-glow w-full max-w-lg rounded-2xl p-8">
+          <div className="relative z-10 space-y-4">
+            <div className="section-label">DocIQ</div>
+            <div className="font-display text-3xl text-foreground">Preparing your workspace</div>
+            <p className="text-sm leading-6 text-muted">Checking your session and loading the command center.</p>
+            <div className="flex items-center gap-3 pt-1 text-sm text-muted">
+              <span
+                aria-hidden="true"
+                className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"
+              />
+              <span>Loading…</span>
+            </div>
+          </div>
+        </div>
+      </main>
+    );
   }
 
   return (
