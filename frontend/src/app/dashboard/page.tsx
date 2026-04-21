@@ -8,6 +8,7 @@ import { getAnalyticsOverview } from "@/api/analytics";
 import { getReviewQueue } from "@/api/documents";
 import { AppShell } from "@/components/layout/app-shell";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useAuthStore } from "@/stores/authStore";
 
 const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
@@ -50,8 +51,9 @@ export default function DashboardPage() {
     clamp(value + Math.min(metrics.documents_processed_today, 24), 12, 90)
   );
 
+  const queuePending = reviewQueue.isPending;
   const queueItems = reviewQueue.data?.items ?? [];
-  const queueEmpty = queueItems.length === 0;
+  const queueEmpty = !queuePending && queueItems.length === 0;
   const queueTag = metrics.review_queue_depth === 0 ? "Queue calm" : "Review pressure";
   const queueTagClass = metrics.review_queue_depth === 0 ? "tag-g" : "tag-a";
 
@@ -86,27 +88,45 @@ export default function DashboardPage() {
         <div className="stat-cell">
           <div className="sc-lbl">Avg confidence</div>
           <div className="sc-num amber">
-            {hasDocuments ? confidencePercent : "—"}
-            <sup>%</sup>
+            {overview.isPending ? (
+              <Skeleton className="h-[44px] w-24" />
+            ) : hasDocuments ? (
+              <>
+                {confidencePercent}
+                <sup>%</sup>
+              </>
+            ) : (
+              "—"
+            )}
           </div>
-          <div className="sc-sub">{hasDocuments ? `${autoApprovalPercent}% auto-approved` : "No documents yet"}</div>
+          <div className="sc-sub">
+            {overview.isPending ? <Skeleton className="mt-2 h-3 w-32" /> : hasDocuments ? `${autoApprovalPercent}% auto-approved` : "No documents yet"}
+          </div>
         </div>
         <div className="stat-cell">
           <div className="sc-lbl">Queue depth</div>
-          <div className="sc-num green">{metrics.review_queue_depth.toLocaleString()}</div>
-          <div className="sc-sub">Awaiting review</div>
-          <div className={`sc-tag ${queueTagClass}`}>{queueTag}</div>
+          <div className="sc-num green">
+            {overview.isPending ? <Skeleton className="h-[44px] w-16" /> : metrics.review_queue_depth.toLocaleString()}
+          </div>
+          <div className="sc-sub">{overview.isPending ? <Skeleton className="mt-2 h-3 w-28" /> : "Awaiting review"}</div>
+          <div className={`sc-tag ${queueTagClass}`}>{overview.isPending ? <Skeleton className="h-4 w-20 rounded" /> : queueTag}</div>
         </div>
         <div className="stat-cell">
           <div className="sc-lbl">Automation runway</div>
-          <div className="sc-num">{hasDocuments ? Math.max(Math.min(confidencePercent, 100), 0) : "—"}</div>
-          <div className="sc-sub">{hasDocuments ? "In safe confidence band" : "No signal yet"}</div>
+          <div className="sc-num">
+            {overview.isPending ? <Skeleton className="h-[44px] w-20" /> : hasDocuments ? Math.max(Math.min(confidencePercent, 100), 0) : "—"}
+          </div>
+          <div className="sc-sub">
+            {overview.isPending ? <Skeleton className="mt-2 h-3 w-40" /> : hasDocuments ? "In safe confidence band" : "No signal yet"}
+          </div>
         </div>
         <div className="stat-cell">
           <div className="sc-lbl">Throughput · 7d</div>
-          <div className="sc-num">{hasDocuments ? metrics.documents_processed_today.toLocaleString() : "0"}</div>
-          <div className="sc-sub">Documents processed</div>
-          <div className="sc-tag tag-d">{hasDocuments ? "Operating" : "Idle"}</div>
+          <div className="sc-num">
+            {overview.isPending ? <Skeleton className="h-[44px] w-20" /> : hasDocuments ? metrics.documents_processed_today.toLocaleString() : "0"}
+          </div>
+          <div className="sc-sub">{overview.isPending ? <Skeleton className="mt-2 h-3 w-36" /> : "Documents processed"}</div>
+          <div className="sc-tag tag-d">{overview.isPending ? <Skeleton className="h-4 w-20 rounded" /> : hasDocuments ? "Operating" : "Idle"}</div>
         </div>
       </div>
 
@@ -253,7 +273,25 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {queueEmpty ? (
+          {queuePending ? (
+            <div className="rp-blk">
+              <div className="rp-h" style={{ textAlign: "center" }}>
+                Review queue
+              </div>
+              <div className="space-y-3">
+                {[0, 1, 2, 3].map((row) => (
+                  <div key={`queue-skeleton-${row}`} className="h-item">
+                    <div className="h-bar hb-a" />
+                    <div style={{ flex: 1 }}>
+                      <Skeleton className="h-4 w-[70%]" />
+                      <Skeleton className="mt-2 h-3 w-40" />
+                    </div>
+                    <Skeleton className="h-7 w-20 rounded" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : queueEmpty ? (
             <div className="rp-blk q-empty">
               <div className="rp-h" style={{ textAlign: "center" }}>
                 Review queue

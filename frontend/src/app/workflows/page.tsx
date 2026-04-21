@@ -16,6 +16,7 @@ export default function WorkflowsPage() {
     queryFn: () => getWorkflows(token),
     enabled: Boolean(token)
   });
+  const isPending = workflows.isPending;
 
   return (
     <AppShell
@@ -44,7 +45,7 @@ export default function WorkflowsPage() {
           </Card>
         ))}
       </div>
-      <WorkflowList workflows={workflows.data?.items ?? []} />
+      <WorkflowList workflows={workflows.data?.items ?? []} isLoading={isPending} />
     </AppShell>
   );
 }

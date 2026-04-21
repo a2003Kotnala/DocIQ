@@ -1,9 +1,41 @@
 import { ArrowRight, GitBranchPlus } from "lucide-react";
 
 import { Card } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { WorkflowDefinition } from "@/types/api";
 
-export function WorkflowList({ workflows }: { workflows: WorkflowDefinition[] }) {
+export function WorkflowList({ workflows, isLoading = false }: { workflows: WorkflowDefinition[]; isLoading?: boolean }) {
+  if (isLoading) {
+    return (
+      <div className="grid gap-4 xl:grid-cols-2">
+        {[0, 1, 2, 3].map((row) => (
+          <Card key={`workflow-skeleton-${row}`} className="p-5 lg:p-6">
+            <div className="relative z-10">
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex items-start gap-4">
+                  <Skeleton className="h-12 w-12 rounded-2xl" />
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-48" />
+                    <Skeleton className="h-3 w-64" />
+                  </div>
+                </div>
+                <Skeleton className="h-7 w-20 rounded-full" />
+              </div>
+              <div className="mt-6 grid gap-3 sm:grid-cols-3">
+                {[0, 1, 2].map((cell) => (
+                  <div key={`workflow-skel-cell-${row}-${cell}`} className="rounded-2xl border border-[rgba(220,180,110,0.12)] bg-[rgba(255,255,255,0.02)] p-4">
+                    <Skeleton className="h-3 w-20" />
+                    <Skeleton className="mt-3 h-6 w-10" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </Card>
+        ))}
+      </div>
+    );
+  }
+
   if (!workflows.length) {
     return (
       <Card className="p-8">
