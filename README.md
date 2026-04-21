@@ -148,7 +148,7 @@ This starts:
 Set-Location backend
 py -3.11 -m venv .venv
 .\.venv\Scripts\Activate.ps1
-python -m pip install --upgrade pip
+python -m pip install --upgrade pip setuptools wheel
 python -m pip install --no-build-isolation -e ".[dev]"
 ```
 
@@ -324,6 +324,7 @@ You have not installed backend dependencies yet. Re-run:
 ```powershell
 Set-Location .\backend
 .\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip setuptools wheel
 python -m pip install --no-build-isolation -e ".[dev]"
 ```
 
