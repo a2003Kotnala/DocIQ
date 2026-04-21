@@ -546,6 +546,45 @@ a {
   }
 }
 
+@keyframes dociq-dropdown-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes dociq-dropdown-out {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.98);
+  }
+}
+
+.dociq-dropdown[data-state="open"] {
+  animation: dociq-dropdown-in 140ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dociq-dropdown[data-state="closed"] {
+  animation: dociq-dropdown-out 120ms ease-in;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dociq-dropdown[data-state="open"],
+  .dociq-dropdown[data-state="closed"] {
+    animation: none;
+  }
+}
+
 .topbar {
   height: 48px;
   min-height: 48px;
