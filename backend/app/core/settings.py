@@ -1,10 +1,11 @@
 from __future__ import annotations
 
+import json
 from functools import lru_cache
-from typing import Literal
+from typing import Annotated, Literal
 
-from pydantic import AnyHttpUrl, Field, SecretStr
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic import AnyHttpUrl, Field, SecretStr, field_validator
+from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
 
 class Settings(BaseSettings):
@@ -13,7 +14,7 @@ class Settings(BaseSettings):
     environment: Literal["development", "staging", "production"] = "development"
     app_name: str = "DocIQ"
     api_v1_prefix: str = "/api/v1"
-    backend_cors_origins: list[AnyHttpUrl | str] = Field(default_factory=list)
+    backend_cors_origins: Annotated[list[AnyHttpUrl | str], NoDecode] = Field(default_factory=list)
     secret_key: SecretStr = Field(default=SecretStr("change-me"))
     jwt_algorithm: str = "HS256"
     access_token_expire_minutes: int = 15
@@ -44,6 +45,32 @@ class Settings(BaseSettings):
     otel_exporter_otlp_endpoint: str | None = None
     sentry_dsn: SecretStr | None = None
     prometheus_enabled: bool = True
+
+    @field_validator("backend_cors_origins", mode="before")
+    @classmethod
+    def parse_backend_cors_origins(cls, value: object) -> object:
+        if value is None:
+            return []
+
+        if isinstance(value, str):
+            raw = value.strip()
+            if not raw:
+                return []
+
+            # Prefer JSON when users provide it (e.g. ["http://localhost:3000"]).
+            try:
+                parsed = json.loads(raw)
+            except json.JSONDecodeError:
+                return [item.strip() for item in raw.split(",") if item.strip()]
+
+            if isinstance(parsed, list):
+                return parsed
+            if isinstance(parsed, str):
+                return [parsed]
+
+            return [str(parsed)]
+
+        return value
 
 
 @lru_cache
