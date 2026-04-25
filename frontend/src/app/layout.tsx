@@ -1,34 +1,31 @@
-import "@/app/globals.css";
-import { Cormorant_Garamond, IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
+import type { Metadata } from "next";
+import { Inter, JetBrains_Mono } from "next/font/google";
 
+import "@/app/globals.css";
 import { Providers } from "@/components/layout/providers";
 
-const displayFont = Cormorant_Garamond({
-  subsets: ["latin"],
-  variable: "--font-display",
-  weight: ["400", "500", "600"],
-  style: ["normal", "italic"]
-});
-
-const sansFont = IBM_Plex_Sans({
+const inter = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
-  weight: ["300", "400", "500", "600"]
+  display: "swap",
 });
 
-const monoFont = IBM_Plex_Mono({
+const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
-  weight: ["300", "400", "500"]
+  display: "swap",
 });
+
+export const metadata: Metadata = {
+  title: "DocIQ — Enterprise Document Intelligence",
+  description:
+    "Ingest, extract, validate, and search enterprise documents with full traceability and human-in-the-loop review.",
+};
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body className={`${displayFont.variable} ${sansFont.variable} ${monoFont.variable}`}>
-        <Providers>{children}</Providers>
-      </body>
+    <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`}>
+      <body>{children && <Providers>{children}</Providers>}</body>
     </html>
   );
 }
-
